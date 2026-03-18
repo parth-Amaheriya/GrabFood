@@ -43,28 +43,29 @@ class Menu(BaseModel):
 
 
 class GrabFood(BaseModel):
-    restaurant_name: str
-    product_category: str
-    img: str
+    restaurant_name: str | None
+    product_category: str | None
+    img: str | None
     location: Location
-    timeZone: str
-    currency: str
-    delivery_time: float
+    timeZone: str | None
+    currency: str | None
+    delivery_time: int | None 
     rating: float | None
     availability: list[Availability]
-    deliverable_distance: float
+    deliverable_distance: float | None
     menu: list[Menu]
 
     @field_validator("currency")
     def validate_currency(cls, v):
+        if v is None:
+            return v
         if not re.match(r"^[A-Z]{2}$", v):
             raise ValueError("Invalid currency code")
         return v
 
     @field_validator("delivery_time", mode="before")
     def validate_delivery_time(cls, v):
-        import re
         match = re.search(r"\d+", str(v))
         if not match:
-            raise ValueError("Invalid delivery time format")
-        return float(match.group())
+            return None
+        return int(match.group())

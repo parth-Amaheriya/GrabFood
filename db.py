@@ -1,8 +1,9 @@
 
-FOLDER_PATH = "files"
-OUTPUT_FOLDER_PATH="output_files"
 import mysql.connector
 import json
+
+FOLDER_PATH = "grab_food_pages/grab_food_pages"
+OUTPUT_FOLDER_PATH="output_files"
 
 DB_CONFIG = {
     "host": "localhost",
@@ -47,7 +48,6 @@ def create_table(cursor):
 
 
 def insert_data(cursor, grab_food):
-    # ✅ skip invalid parse
     if grab_food is None:
         return
 
@@ -77,9 +77,9 @@ def insert_data(cursor, grab_food):
         grab_food.location.longitude,
         grab_food.timeZone,
         grab_food.currency,
-        int(grab_food.delivery_time),
+        grab_food.delivery_time,
         grab_food.rating,
         grab_food.deliverable_distance,
-        json.dumps([a.model_dump() for a in grab_food.availability]),  # ✅ FIX
-        json.dumps([m.model_dump() for m in grab_food.menu])           # ✅ FIX
+        json.dumps([a.model_dump() for a in grab_food.availability]), 
+        json.dumps([m.model_dump() for m in grab_food.menu])          
     ))

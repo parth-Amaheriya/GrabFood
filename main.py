@@ -1,6 +1,8 @@
 import os
 from parser import parse_file
-from db import FOLDER_PATH, get_connection, create_table, insert_data, create_database
+from db import FOLDER_PATH,get_connection, create_table, insert_data, create_database
+
+
 
 def main():
     conn = get_connection()
@@ -8,10 +10,14 @@ def main():
     
     create_database(cursor)
     create_table(cursor)
-
+    
+    count=0
     for file_name in os.listdir(FOLDER_PATH):
-        if not file_name.endswith(".json"):
-            continue
+        
+        # if count>=10:
+        #     break
+        # if not file_name.endswith(".json"):
+        #     continue
 
         file_path = os.path.join(FOLDER_PATH, file_name)
         print(f"Processing: {file_name}")
@@ -23,6 +29,7 @@ def main():
 
         except Exception as e:
             print(f"Error in {file_name}: {e}")
+        count+=1    
 
     cursor.close()
     conn.close()

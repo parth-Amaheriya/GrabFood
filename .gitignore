@@ -1,1 +1,6 @@
-__pycache__
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.pyd   
+grab_food_pages/
