@@ -1,0 +1,70 @@
+from pydantic import BaseModel, field_validator
+import re
+
+class Location(BaseModel):
+    latitude: float
+    longitude: float
+
+    @field_validator("latitude")
+    def validate_latitude(cls, v):
+        if not (-90 <= v <= 90):
+            raise ValueError("Latitude must be between -90 and 90")
+        return v
+
+    @field_validator("longitude")
+    def validate_longitude(cls, v):
+        if not (-180 <= v <= 180):
+            raise ValueError("Longitude must be between -180 and 180")
+        return v
+
+
+class Availability(BaseModel):
+    day: str
+    time_range: str
+
+
+class Items(BaseModel):
+    item_name: str
+    item_img: str | None
+    price: float
+    discount_price: float | None
+    description: str
+
+    @field_validator("price")
+    def validate_price(cls, v):
+        if v < 0:
+            raise ValueError("Price cannot be negative")
+        return v
+
+
+class Menu(BaseModel):
+    category: str
+    items: list[Items]
+
+
+class GrabFood(BaseModel):
+    restaurant_name: str
+    product_category: str
+    img: str
+    location: Location
+    timeZone: str
+    currency: str
+    delivery_time: float
+    rating: float | None
+    availability: list[Availability]
+    deliverable_distance: float
+    menu: list[Menu]
+
+    @field_validator("currency")
+    def validate_currency(cls, v):
+        if not re.match(r"^[A-Z]{2}$", v):
+            raise ValueError("Invalid currency code")
+        return v
+
+    @field_validator("delivery_time", mode="before")
+    def validate_delivery_time(cls, v):
+        import re
+        match = re.search(r"\d+", str(v))
+        if not match:
+            raise ValueError("Invalid delivery time format")
+        return float(match.group())
