@@ -4,27 +4,28 @@ from db import OUTPUT_FOLDER_PATH
 import gzip
 
 def parse_file(file_path):
-
+    
     try:
         with gzip.open(file_path, 'rt', encoding='utf-8') as f:
             raw = json.load(f)
         if raw.get('merchant') is not None :
             data = raw.get('merchant',{})
         else:
-            print("no merchant found") 
-            return GrabFood(
-                restaurant_name=None,
-                product_category=None,
-                img=None,
-                location=Location(latitude=0, longitude=0),
-                timeZone=None,
-                currency=None,
-                delivery_time=None,
-                rating=None,
-                availability=[],
-                deliverable_distance=None,
-                menu=[]
-            )   
+            print("File:- ",file_path,"no merchant found") 
+            return None
+            # GrabFood(
+            #     restaurant_name=None,
+            #     product_category=None,
+            #     img=None,
+            #     location=Location(latitude=0, longitude=0),
+            #     timeZone=None,
+            #     currency=None,
+            #     delivery_time=None,
+            #     rating=None,
+            #     availability=[],
+            #     deliverable_distance=None,
+            #     menu=[]
+            # )   
 
 
         location = Location(
