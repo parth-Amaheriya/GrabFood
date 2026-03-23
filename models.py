@@ -30,6 +30,17 @@ class Items(BaseModel):
     discount_price: float | None
     description: str
 
+    @field_validator("price", "discount_price", mode="before")
+    def clean_price(cls, v):
+        if v is None:
+            return None
+        
+        v = str(v).replace(",", "").strip()
+        try:
+            return float(v)
+        except:
+            raise ValueError(f"Invalid price: {v}")
+        
     @field_validator("price")
     def validate_price(cls, v):
         if v < 0:
@@ -59,8 +70,10 @@ class GrabFood(BaseModel):
     def validate_currency(cls, v):
         if v is None:
             return v
-        if not re.match(r"^[A-Z]{2}$", v):
-            raise ValueError("Invalid currency code")
+        
+        if not re.match(r"^[A-Z]{2,3}$|^[A-Z]\$$", v):
+            raise ValueError(f"Invalid currency code: {v}")
+        
         return v
 
     @field_validator("delivery_time", mode="before")
